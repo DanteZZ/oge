@@ -1,83 +1,68 @@
-oge.buffer.instances = [];
-oge.buffer.lastInstId = 0;
+let fns = {
+	createInstance:function(info) {
+		if (!info) {return false;};
+		if (!info.name) {return false;};
 
-createInstance = function(info) {
-	if (!info) {return false;};
-	if (!info.name) {return false;};
+		let obj = this._objects[info.name];
+		let iid = parseInt(this.buffer.lastInstId);
+		this.buffer.instances[iid] = new this.Instance(info,obj,iid);
 
-	let obj = _objects[info.name];
-	let iid = parseInt(oge.buffer.lastInstId);
-	oge.buffer.instances[iid] = new Instance(info,obj,iid);
+		if (this.buffer.instances[iid]._create !== undefined) {
+			this.buffer.instances[iid]._create();
+		};
+		this.buffer.lastInstId++;
+		return this.buffer.instances[iid];
+	},
+	findInstances:function(name) {
+		let list = [];
+		for (var k in this.buffer.instances) {
+			if (!this.buffer.instances[k]) {continue;}
+			if (this.buffer.instances[k].name == name) {
+				list.push(this.buffer.instances[k]);
+			};
+		}
 
-	if (oge.buffer.instances[iid]._create !== undefined) {
-		oge.buffer.instances[iid]._create();
-	};
-	oge.buffer.lastInstId++;
-	return oge.buffer.instances[iid];
-}
+		if (list.length) {
+			return list;
+		} else {
+			return false;
+		}
+	},
+	__drawEvent:function() {
+		for (var id in this.buffer.instances) {
+			let instance = this.buffer.instances[id];
+			if (!instance) {continue;}
+			if (instance._draw) {instance._draw();};
+		}
+	},
+	__updateEvent:function() {
+		for (var id in this.buffer.instances) {
+			let instance = this.buffer.instances[id];
+			if (!instance) {continue;}
 
-findInstances = function(name) {
-	let list = [];
-	for (var k in oge.buffer.instances) {
-		if (!oge.buffer.instances[k]) {continue;}
-		if (oge.buffer.instances[k].name == name) {
-			list.push(oge.buffer.instances[k]);
+			instance.prevent_x = instance.x;
+			instance.prevent_y = instance.y;
+
+			if (instance._update) {instance._update();};
+		}
+	},
+	__sortInstances:function() {
+		this.buffer.instances.sort(function(a,b) {
+			return a.depth-b.depth;
+		});
+	},
+	destroyInstance:function(inst) {
+		if (inst.constructor == Instance) {
+			this.buffer.instances[inst.id] = null;
+			return true;
+		} else if (this.buffer.instances[inst]) {
+			this.buffer.instances[inst] = null;
+			return true;
+		} else {
+			return false;
 		};
 	}
-
-	if (list.length) {
-		return list;
-	} else {
-		return false;
-	}
 }
-
-__drawEvent = function() {
-	for (var id in oge.buffer.instances) {
-		let instance = oge.buffer.instances[id];
-		if (!instance) {continue;}
-		if (instance._draw) {instance._draw();};
-	}
-}
-
-__updateEvent = function() {
-	for (var id in oge.buffer.instances) {
-		let instance = oge.buffer.instances[id];
-		if (!instance) {continue;}
-
-		instance.prevent_x = instance.x;
-		instance.prevent_y = instance.y;
-
-		if (instance._update) {instance._update();};
-	}
-}
-
-__sortInstances = function() {
-	oge.buffer.instances.sort(function(a,b) {
-		return a.depth-b.depth;
-	});
-}
-
-destroyInstance = function(inst) {
-	if (inst.constructor == Instance) {
-		oge.buffer.instances[inst.id] = null;
-		return true;
-	} else if (oge.buffer.instances[inst]) {
-		oge.buffer.instances[inst] = null;
-		return true;
-	} else {
-		return false;
-	};
-}
-
-addEventListener("project_load",function(event){
-	oge.buffer.instances = [];
-	oge.buffer.lastInstId = 0;
-})
-
-addEventListener("before_draw",__sortInstances);
-addEventListener("update",__updateEvent);
-addEventListener("draw",__drawEvent);
 
 class Instance {
 	constructor(inf,obj,id) {
@@ -96,6 +81,30 @@ class Instance {
 	}
 	
 	destroy() {
-		oge.buufer.instances[this.id] = null;
+		this._oge.buffer.instances[this.id] = null;
 	}
 }
+
+module.exports = {
+	_init:function(oge) {
+		this.oge = oge;
+		this.oge.buffer.instances = [];
+		this.oge.buffer.lastInstId = 0;
+		for (var n in fns) {
+			this.oge[n] = fns[n];
+		};
+		this.oge.Instance = Instance;
+		Object.assign(this.oge.Instance.prototype, {_oge:this.oge});
+	}
+}
+
+/* +++++++++++++++++++++
+	addEventListener("project_load",function(event){
+		oge.buffer.instances = [];
+		oge.buffer.lastInstId = 0;
+	})
+
+	addEventListener("before_draw",__sortInstances);
+	addEventListener("update",__updateEvent);
+	addEventListener("draw",__drawEvent);
+*/

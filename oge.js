@@ -1,5 +1,4 @@
 window._fs = require('fs');
-window._mime = require('mime');
 
 function loadScriptAsync(link) { // Подключение скрипта
 	$.ajax({
@@ -44,9 +43,12 @@ class OGEngine {
 	}
 
 	init() {
-		this._mdl = new Modules();
-		this._lib = new Libs();
-		this._graph = new Graphic();
+		this._mdl = this.requireUncached("modules.js");
+		this._graph = this.requireUncached("graphic.js");
+
+		this._mdl.init(this);
+		this._graph.init(this);
+
 		dispatchEvent(this.events.after_init);
 	}
 
@@ -92,11 +94,11 @@ class OGEngine {
 		dispatchEvent(this.events.draw);
 		dispatchEvent(this.events.after_draw);
 	}
+	requireUncached(module) {
+		global.console.log(module);
+	    delete require.cache[require.resolve(module)];
+	    return require(module);
+	}
 }
 
-$(document).ready(function(){
-	window.oge = new OGEngine();
-	oge.init();
-	oge.loadProject("projects/platformer");
-	oge.start();
-})
+module.exports = new OGEngine;

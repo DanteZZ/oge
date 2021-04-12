@@ -1,12 +1,13 @@
-window._sprites = {};
-
-regSprite = function(info) {
-	if (!info) {return false;};
-	if (!info.name) {return false;};
-	if (!info.src) {return false;};
-	_sprites[info.name] = new Sprite(info);
-	return _sprites[info.name];
+let fns = {
+	regSprite:function(info) {
+		if (!info) {return false;};
+		if (!info.name) {return false;};
+		if (!info.src) {return false;};
+		this._sprites[info.name] = new this.Sprite(info);
+		return this._sprites[info.name];
+	}
 }
+
 
 
 class Sprite {
@@ -21,7 +22,7 @@ class Sprite {
 			center_x:0,
 			center_y:0
 		}
-		info = $.extend(inf,info);
+		info = Object.assign(inf,info);
 		for (var k in info) {
 			this[k] = info[k];
 		};
@@ -44,9 +45,24 @@ class Sprite {
 
 	base64_encode(path) {
 	    var image = _fs.readFileSync(path, 'base64');
-	    return "data:"+_mime.getType(path)+";base64,"+image;
+	    return "data:image/png;base64,"+image;
 	}
 }
+
+
+module.exports = {
+	_init:function(oge) {
+		this.oge = oge;
+		this.oge._sprites = {};
+		for (var n in fns) {
+			this.oge[n] = fns[n];
+		};
+		this.oge.Sprite = Sprite;
+		Object.assign(this.oge.Sprite.prototype, {_oge:this.oge});
+	}
+}
+
+/*++++++++++++++++
 
 addEventListener("project_load",function(event){
 	_sprites = {};
@@ -164,3 +180,4 @@ addEventListener("after_init",function(event){
 	}
 })
 
+*/

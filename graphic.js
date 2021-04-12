@@ -1,13 +1,14 @@
-class Graphic {
-	constructor() {
+module.exports = {
+	init:function(oge) {
+		this.oge = oge;
 		this.canvases = {};
-	}
+	},
 
-	getCanvas(name) {
+	getCanvas:function(name) {
 		if (this.canvases[name]) {return this.canvases[name];}
-	}
+	},
 
-	createCanvas(name,context) {
+	createCanvas:function(name,context) {
 		if (!name) {return false;};
 		if (!context) {context = "2d";};
 		if (this.canvases[name]) {return false;};
@@ -18,9 +19,9 @@ class Graphic {
 		this.canvases[name].offset_x = 0;
 		this.canvases[name].offset_y = 0;
 		return this.canvases[name];
-	}
+	},
 
-	clear(name) {
+	clear:function(name) {
 		let list = {};
 		if ((name) && (this.canvases[name])) {
 			list[name] = this.canvases[name];
@@ -32,9 +33,9 @@ class Graphic {
 			canv.clearRect(0, 0, canv.canvas.width, canv.canvas.height);
 		};
 		return true;
-	}
+	},
 
-	setSize(name,width,height) {
+	setSize:function(name,width,height) {
 		if (this.canvases[name]) {
 			let canv = this.canvases[name].canvas;
 			if (!width) {canv.width=window.innerWidth;} else {canv.width = width;};
@@ -43,18 +44,18 @@ class Graphic {
 		} else {
 			return false;
 		}
-	}
+	},
 
-	setAllSizes(width,height) {
+	setAllSizes:function(width,height) {
 		for (var name in this.canvases) {
 			let canv = this.canvases[name].canvas;
 			if (!width) {canv.width=window.innerWidth;} else {canv.width = width;};
 			if (!height) {canv.height=window.innerHeight;} else {canv.height = height;};	
 		};
 		return true;
-	}
+	},
 
-	setOffset(name,x,y) {
+	setOffset:function(name,x,y) {
 		if (this.canvases[name]) {
 			let canv = this.canvases[name];
 			canv.offset_x = x;
@@ -63,9 +64,9 @@ class Graphic {
 		} else {
 			return false;
 		}
-	}
+	},
 
-	restore(name) {
+	restore:function(name) {
 		let list = {};
 		if ((name) && (this.canvases[name])) {
 			list[name] = this.canvases[name];
@@ -77,9 +78,9 @@ class Graphic {
 			canv.restore();
 		};
 		return true;
-	}
+	},
 
-	destroyCanvas(name) {
+	destroyCanvas:function(name) {
 		if (this.canvases[name]) {
 			let canv = this.canvases[name].canvas;
 			$(canv).remove();
@@ -87,9 +88,9 @@ class Graphic {
 		} else {
 			return false;
 		}
-	}
+	},
 
-	destroyAll() {
+	destroyAll:function() {
 		if (this.canvases) {
 			for (var k in this.canvases) {
 				let canv = this.canvases[k].canvas;
@@ -100,9 +101,9 @@ class Graphic {
 		} else {
 			return false;
 		}
-	}
+	},
 
-	drawImage(info) {
+	drawImage:function(info) {
 		if (!this.canvases[info.canvas]) {return false;};
 		let ctx = this.getCanvas(info.canvas);
 
@@ -129,7 +130,7 @@ class Graphic {
 		if (info.rotation) {  ctx.restore(); };
 		return true;
 	}
-}
+};
 
 addEventListener("before_draw",function(){oge._graph.clear()});
 addEventListener("after_draw",function(){oge._graph.restore()});

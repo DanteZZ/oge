@@ -1,41 +1,3 @@
-let fns = {
-	_onBoxMeeting: function(one,two) {
-		return one.x < two.x + two.width && one.x + one.width > two.x && one.y < two.y + two.height && one.y + one.height > two.y;
-	}
-};
-
-class Collider {
-	constructor(info) {
-		let inf = {
-			name:"collider",
-			width:0,
-			height:0,
-			x:0,
-			y:0,
-			solid:true
-		}
-		info = Object.assign(inf,info);
-		for (var k in info) {
-			this[k] = info[k];
-		};
-		return this;
-	}
-
-}
-
-module.exports = {
-	_init:function(oge) {
-		this.oge = oge;
-		for (var n in fns) {
-			this.oge[n] = fns[n];
-		};
-		this.oge.Collider = Collider;
-		Object.assign(this.oge.Collider.prototype, {_oge:this.oge});
-	}
-}
-
-
-/*
 addEventListener("after_init",function(event){
 
 	Instance.prototype.createCollider = function(info) {
@@ -201,10 +163,10 @@ addEventListener("after_init",function(event){
 			return false;
 		}
 		
-		
-		//let x = Math.cos(direction/ 180 * Math.PI);
-		//let y = Math.sin(direction/ 180 * Math.PI);
-		
+		/*
+		let x = Math.cos(direction/ 180 * Math.PI);
+		let y = Math.sin(direction/ 180 * Math.PI);
+		*/
 
 		let distantion = true;
 		let size = oge.buffer.scene.layers[oge.buffer.defaultLayer].height;
@@ -264,5 +226,30 @@ addEventListener("after_init",function(event){
 	Instance.prototype.check__colliders = function() {
 		if (!this.__colliders) {this.__colliders = {};};
 	}
+
 })
-*/
+
+class Collider {
+	
+	constructor(info) {
+		let inf = {
+			name:"collider",
+			width:0,
+			height:0,
+			x:0,
+			y:0,
+			solid:true
+		}
+		info = $.extend(inf,info);
+		for (var k in info) {
+			this[k] = info[k];
+		};
+		return this;
+	}
+
+}
+
+function _onBoxMeeting(one,two) {
+	//console.log(one,two);
+	return one.x < two.x + two.width && one.x + one.width > two.x && one.y < two.y + two.height && one.y + one.height > two.y;
+}
