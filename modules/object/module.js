@@ -35,22 +35,21 @@ module.exports = {
 		}
 		this.oge.Obj = Obj;
 		Object.assign(this.oge.Obj.prototype, {_oge:this.oge});
+
+		this.oge._em.on("project_load",function(proj){
+			this._objects = {};
+			if (proj.objects) {
+				let list = proj.objects;
+				for (var name in list) {
+					let obj = list[name];
+					if (obj[0] !== "/") {obj = "/"+obj;};
+					obj = proj.path+obj;
+					obj = this.loadObjectAsync(obj);
+					obj.name = name;
+					this.regObj(obj);
+				};
+			};
+		})
+
 	}
 }
-
-/* +++++++++++++++++++
-addEventListener("project_load",function(event){
-	_objects = {};
-	if (event.detail.objects) {
-		let list = event.detail.objects;
-		for (var name in list) {
-			let obj = list[name];
-			if (obj[0] !== "/") {obj = "/"+obj;};
-			obj = event.detail.path+obj;
-			obj = loadObjectAsync(obj);
-			obj.name = name;
-			regObj(obj);
-		};
-	};
-})
-*/

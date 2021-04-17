@@ -3,7 +3,7 @@
 	speed:40,
 
 	load:function() {
-		setInterval(function(){$("#fps").text(oge.realFPS);},500);
+		//setInterval(function(){$("#fps").text(oge.realFPS);},500);
 	},
 
 	_create:function() {
@@ -17,55 +17,55 @@
 		this.setSpriteSpeed(0);
 
 		window.hero = this;
-		oge.buffer.camera.point = this;
+		this._oge.buffer.camera.point = this;
 	},
 
 	_update:function() {
 		this.depth = this.y;
-		if (onKeyHold(68)) {
+		if (this._oge.onKeyHold(68)) {
 			this.x+= parseInt(this.speed*deltaTime*10);
 		}
-		if (onKeyHold(65)) {
+		if (this._oge.onKeyHold(65)) {
 			this.x-= parseInt(this.speed*deltaTime*10);
 		}
-		if (onKeyHold(87)) {
+		if (this._oge.onKeyHold(87)) {
 			this.y-= parseInt(this.speed*deltaTime*10);
 		}
-		if (onKeyHold(83)) {
+		if (this._oge.onKeyHold(83)) {
 			this.y+= parseInt(this.speed*deltaTime*10);
 		}
 
-		if (onKeyPress(68)) {
+		if (this._oge.onKeyPress(68)) {
 			this.setSprite("hero_right");
 			this.setSpriteSpeed(1);
 		}
-		if (onKeyPress(65)) {
+		if (this._oge.onKeyPress(65)) {
 			this.setSprite("hero_left");
 			this.setSpriteSpeed(1);
 		}
-		if (onKeyPress(87)) {
+		if (this._oge.onKeyPress(87)) {
 			this.setSprite("hero_up");
 			this.setSpriteSpeed(1);
 		}
-		if (onKeyPress(83)) {
+		if (this._oge.onKeyPress(83)) {
 			this.setSprite("hero_down");
 			this.setSpriteSpeed(1);
 		}
 
 
-		if (onKeyRelease(68)) {
+		if (this._oge.onKeyRelease(68)) {
 			this.setSprite("hero_right");
 			this.setSpriteSpeed(0);
 		}
-		if (onKeyRelease(65)) {
+		if (this._oge.onKeyRelease(65)) {
 			this.setSprite("hero_left");
 			this.setSpriteSpeed(0);
 		}
-		if (onKeyRelease(87)) {
+		if (this._oge.onKeyRelease(87)) {
 			this.setSprite("hero_up");
 			this.setSpriteSpeed(0);
 		}
-		if (onKeyRelease(83)) {
+		if (this._oge.onKeyRelease(83)) {
 			this.setSprite("hero_down");
 			this.setSpriteSpeed(0);
 		};

@@ -1,6 +1,6 @@
 {
 	load:function() {
-		setInterval(function(){$("#fps").text(oge.realFPS);},500);
+		//setInterval(function(){$("#fps").text(oge.realFPS);},500);
 	},
 
 	layers: {
@@ -8,11 +8,6 @@
 			type:"2d",
 			width:1280,
 			height:1280
-		},
-		gui:{
-			type:"2d",
-			width:0,
-			height:0
 		}
 	},
 
@@ -51,7 +46,7 @@
 		for (var y in map) {
 			for (var x in map[y]) {
 				if (map[y][x]) {
-					createInstance({
+					this._oge.createInstance({
 						name:"wall",
 						x:x*96,
 						y:y*96
@@ -63,7 +58,7 @@
 	},
 
 	_draw:function() {
-		let ctx = oge._graph.getCanvas(oge.buffer.defaultLayer);
+		let ctx = this._oge._graph.getCanvas(this._oge.buffer.defaultLayer);
 
 		ctx.fillStyle = "#3B474F";
 		ctx.fillRect(0,0, 5000, 5000);
@@ -72,9 +67,9 @@
 		ctx.fillStyle = "rgba(255,255,255,0.11)";
 		ctx.strokeStyle = "rgba(255,255,255,0.41)";
 		let tilesize=128;
-		ctx.fillRect(0-ctx.offset_x, 0-ctx.offset_y, oge.buffer.scene.layers.game.width, oge.buffer.scene.layers.game.height);
-		for (var y=0;y<oge.buffer.scene.layers.game.height/tilesize;y++) {
-			for (var x=0;x<oge.buffer.scene.layers.game.height/tilesize;x++) {
+		ctx.fillRect(0-ctx.offset_x, 0-ctx.offset_y, this._oge.buffer.scene.layers.game.width, this._oge.buffer.scene.layers.game.height);
+		for (var y=0;y<this._oge.buffer.scene.layers.game.height/tilesize;y++) {
+			for (var x=0;x<this._oge.buffer.scene.layers.game.height/tilesize;x++) {
 				ctx.rect(0-ctx.offset_x+x*tilesize, 0-ctx.offset_y+y*tilesize, tilesize, tilesize);
 			};
 		}

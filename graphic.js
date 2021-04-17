@@ -2,6 +2,9 @@ module.exports = {
 	init:function(oge) {
 		this.oge = oge;
 		this.canvases = {};
+
+		this.oge._em.on("before_draw",function(){this._graph.clear()});
+		this.oge._em.on("after_draw",function(){this._graph.restore()});
 	},
 
 	getCanvas:function(name) {
@@ -13,9 +16,9 @@ module.exports = {
 		if (!context) {context = "2d";};
 		if (this.canvases[name]) {return false;};
 
-		let canvas = document.createElement("canvas");
+		let canvas = this.oge.doc.createElement("canvas");
 		this.canvases[name] = canvas.getContext(context);
-		document.body.appendChild(canvas);
+		this.oge.doc.body.appendChild(canvas);
 		this.canvases[name].offset_x = 0;
 		this.canvases[name].offset_y = 0;
 		return this.canvases[name];
@@ -131,6 +134,3 @@ module.exports = {
 		return true;
 	}
 };
-
-addEventListener("before_draw",function(){oge._graph.clear()});
-addEventListener("after_draw",function(){oge._graph.restore()});

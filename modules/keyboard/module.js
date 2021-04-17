@@ -1,6 +1,3 @@
-
-
-
 //Mouse
 let fns = {
 	fixWhich:function(e) {
@@ -67,35 +64,73 @@ module.exports = {
 		for (var n in fns) {
 			this.oge[n] = fns[n];
 		};
+
+		this.oge._em.on("after_update",function(){
+			var res = [];
+			for (var k in this.buffer.keys) {
+				if (this.buffer.keys[k] !== "released") {
+					res[k] = this.buffer.keys[k];
+				};
+				if (this.buffer.keys[k] == "pressed") {
+					res[k] = "hold";
+				};
+			};
+			this.buffer.keys = res;
+
+			// MOUSE KEYS
+			var res = [];
+			for (var k in this.buffer.mouse_keys) {
+				if (this.buffer.mouse_keys[k] !== "released") {
+					res[k] = this.buffer.mouse_keys[k];
+				};
+				if (this.buffer.mouse_keys[k] == "pressed") {
+					res[k] = "hold";
+				};
+			};
+			this.buffer.mouse_keys = res;
+		});
+
+		this.oge.doc.addEventListener("keydown",this.oge._docOnKeydown);
+
+			
+			this.oge.doc.addEventListener("keydown", handler => {
+				key = handler.keyCode;
+				if (global._oge.buffer.keys[key] == undefined) {
+					global._oge.buffer.keys[key] = "pressed";
+				} else {
+					global._oge.buffer.keys[key] = "hold";
+				}
+			});
+			
+			this.oge.doc.addEventListener("keyup", handler => {
+				key = handler.keyCode;
+				global._oge.buffer.keys[key] = "released";
+			});
+
+			//Mouse
+			this.oge.doc.onmousedown = function(e) {
+				e.which = fixWhich(e);
+				key = e.which;
+				global._oge.buffer.mouse_keys[key] = "pressed";
+			};
+
+			this.oge.doc.onmouseup = function(e) {
+				e.which = fixWhich(e);
+				key = e.which;
+				global._oge.buffer.mouse_keys[key] = "released";
+			};
+
+			this.oge.doc.onmousemove = function(e) {
+				global.mouse_x = e.clientX;
+				global.mouse_y = e.clientY;
+			};
+
 	}
 }
 
 
 /* +++++++++++
-addEventListener("after_update",function(){
-	var res = [];
-	for (var k in oge.buffer.keys) {
-		if (oge.buffer.keys[k] !== "released") {
-			res[k] = oge.buffer.keys[k];
-		};
-		if (oge.buffer.keys[k] == "pressed") {
-			res[k] = "hold";
-		};
-	};
-	oge.buffer.keys = res;
 
-	// MOUSE KEYS
-	var res = [];
-	for (var k in oge.buffer.mouse_keys) {
-		if (oge.buffer.mouse_keys[k] !== "released") {
-			res[k] = oge.buffer.mouse_keys[k];
-		};
-		if (oge.buffer.mouse_keys[k] == "pressed") {
-			res[k] = "hold";
-		};
-	};
-	oge.buffer.mouse_keys = res;
-})
 
 
 //Keyboard

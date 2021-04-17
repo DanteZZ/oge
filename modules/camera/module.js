@@ -30,7 +30,7 @@ let fns = {
 
 		if (cam.point) {
 			let point = null;
-			if (cam.point.constructor !== Instance) {
+			if (cam.point.constructor !== this.Instance) {
 				find = findInstances(cam.point);
 				if (find[0]) {
 					point = find[0];
@@ -65,6 +65,7 @@ let fns = {
 
 			for (var par in c) {
 				if (typeof(c[par]) == "object") {
+					if (par == "_oge") {continue;};
 					cam[par] = JSON.parse(JSON.stringify(c[par]));
 				} else {
 					cam[par] = c[par];
@@ -109,20 +110,18 @@ module.exports = {
 		};
 		this.oge.Cam = Cam;
 		Object.assign(this.oge.Cam.prototype, {_oge:this.oge});
+
+		this.oge._em.on("project_load",function(proj){
+			this._cameras = {};
+			if (proj.cameras) {
+				let list = proj.cameras;
+				for (var name in list) {
+					let cam = list[name];
+					cam.name = name;
+					this.regCam(cam);
+				};
+			};
+		});
+		this.oge._em.on("before_draw",this.oge.updateView)
 	}
 }
-
-/*++++++++++++++++
-addEventListener("project_load",function(event){
-	_cameras = {};
-	if (event.detail.cameras) {
-		let list = event.detail.cameras;
-		for (var name in list) {
-			let cam = list[name];
-			cam.name = name;
-			regCam(cam);
-		};
-	};
-})
-addEventListener("before_draw",updateView)
-*/

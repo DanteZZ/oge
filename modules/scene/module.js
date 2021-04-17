@@ -3,6 +3,7 @@ let fns = {
 		if (!info) {return false;};
 		if (!info.name) {return false;};
 		this._scenes[info.name] = new Scene(info);
+		this._scenes[info.name]._oge = this;
 		return this._scenes[info.name]; 
 	},
 
@@ -12,7 +13,7 @@ let fns = {
 		this._graph.destroyAll();
 		let scene = this._scenes[name];
 
-		dispatchEvent(new CustomEvent("before_scene_load",{bubbles:true,detail:scene}));
+		this._em.emit("before_scene_load",scene);
 
 		if (scene.layers) {
 			for (var k in scene.layers) {
@@ -27,23 +28,23 @@ let fns = {
 
 		if (scene.cameras) {
 			for (var k in scene.cameras) {
-				createCamera(k,scene.cameras[k]);
+				this.createCamera(k,scene.cameras[k]);
 			};
 		};
 
 		this.buffer.scene = this._scenes[name];
 		this.buffer.defaultLayer = scene.defaultLayer;
 
-		setCamera(scene.defaultCam);
+		this.setCamera(scene.defaultCam);
 
 
 		if (scene.instances) {
 			for (var k in scene.instances) {
-				createInstance(scene.instances[k]);
+				this.createInstance(scene.instances[k]);
 			};
 		};
 		
-		dispatchEvent(new CustomEvent("after_scene_load",{bubbles:true,detail:scene}));
+		this._em.emit("after_scene_load",scene);
 
 		return true;
 	}
@@ -110,48 +111,44 @@ module.exports = {
 		};
 		this.oge.Scene = Scene;
 		Object.assign(this.oge.Scene.prototype, {_oge:this.oge});
+
+		this.oge._em.on("project_load",function(proj){
+			this._scenes = {};
+			this._graph.destroyAll();
+			if (proj.scenes) {
+				let list = proj.scenes;
+				for (var name in list) {
+					let scene = list[name];
+					if (scene[0] !== "/") {scene = "/"+scene;};
+					let path = proj.path;
+					scene = this.loadObjectAsync(path+scene);
+					scene.name = name;
+					scene.path = path;
+					scene = this.regScene(scene);
+
+					if (scene.load) {
+						scene.load();
+					};
+				};
+			};
+		});
+
+		this.oge._em.on("start",function(){
+			if (!this.loadScene(this.project.defaultScene)) {
+				global.console.error("Неверное название defaultScene");
+			}
+		});
+
+		this.oge._em.on("before_draw",function(){
+			if (this.buffer.scene._draw) {this.buffer.scene._draw();};
+		});
+
+		this.oge._em.on("update",function(){
+			if (this.buffer.scene._update) {this.buffer.scene._update();};
+		});
+
+		this.oge._em.on("after_update",function(){
+			if (this.buffer.scene._updateLayers) {this.buffer.scene._updateLayers();};
+		});
 	}
 }
-
-/*++++++++++++++++
-
-
-addEventListener("project_load",function(event){
-	this._scenes = {};
-	oge._graph.destroyAll();
-	if (event.detail.scenes) {
-		let list = event.detail.scenes;
-		for (var name in list) {
-			let scene = list[name];
-			if (scene[0] !== "/") {scene = "/"+scene;};
-			let path = event.detail.path;
-			scene = loadObjectAsync(path+scene);
-			scene.name = name;
-			scene.path = path;
-			scene = regScene(scene);
-
-			if (scene.load) {
-				scene.load();
-			};
-		};
-	};
-});
-
-addEventListener("start",function(){
-	if (!loadScene(oge.project.defaultScene)) {
-		alert("Неверное название defaultScene");
-	}
-});
-
-addEventListener("before_draw",function(){
-	if (oge.buffer.scene._draw) {oge.buffer.scene._draw();};
-});
-
-addEventListener("update",function(){
-	if (oge.buffer.scene._update) {oge.buffer.scene._update();};
-});
-
-addEventListener("after_update",function(){
-	if (oge.buffer.scene._updateLayers) {oge.buffer.scene._updateLayers();};
-});
-*/

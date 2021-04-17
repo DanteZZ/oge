@@ -69,6 +69,7 @@ class Instance {
 		this.depth = 0;
 		for (var par in obj) {
 			if (typeof(obj[par]) == "object") {
+				if (par == "_oge") {continue;};
 				this[par] = JSON.parse(JSON.stringify(obj[par]));
 			} else {
 				this[par] = obj[par];
@@ -95,16 +96,15 @@ module.exports = {
 		};
 		this.oge.Instance = Instance;
 		Object.assign(this.oge.Instance.prototype, {_oge:this.oge});
+
+		this.oge._em.on("project_load",function(){
+			this.buffer.instances = [];
+			this.buffer.lastInstId = 0;
+		})
+
+		this.oge._em.on("before_draw",this.oge.__sortInstances);
+		this.oge._em.on("update",this.oge.__updateEvent);
+		this.oge._em.on("draw",this.oge.__drawEvent);
+
 	}
 }
-
-/* +++++++++++++++++++++
-	addEventListener("project_load",function(event){
-		oge.buffer.instances = [];
-		oge.buffer.lastInstId = 0;
-	})
-
-	addEventListener("before_draw",__sortInstances);
-	addEventListener("update",__updateEvent);
-	addEventListener("draw",__drawEvent);
-*/

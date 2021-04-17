@@ -4,7 +4,10 @@ function requireUncached(module) {
 };
 document.oncontextmenu = function (){return false};
 global.console = console;
+
 const _oge = requireUncached("oge.js");
-_oge.init();
-//_oge.loadProject("projects/example");
-//_oge.start();
+global._oge = _oge;
+
+_oge.init(document,window);
+_oge.loadProject("projects/example");
+_oge.start();
