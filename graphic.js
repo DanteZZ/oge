@@ -2,7 +2,6 @@ module.exports = {
 	init:function(oge) {
 		this.oge = oge;
 		this.canvases = {};
-
 		this.oge._em.on("before_draw",function(){this._graph.clear()});
 		this.oge._em.on("after_draw",function(){this._graph.restore()});
 	},

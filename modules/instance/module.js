@@ -100,7 +100,7 @@ module.exports = {
 		this.oge._em.on("project_load",function(){
 			this.buffer.instances = [];
 			this.buffer.lastInstId = 0;
-		})
+		});
 
 		this.oge._em.on("before_draw",this.oge.__sortInstances);
 		this.oge._em.on("update",this.oge.__updateEvent);

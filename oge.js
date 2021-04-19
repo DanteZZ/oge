@@ -11,12 +11,12 @@ class OGEngine {
 
 	init(doc,win) {
 		this.doc = doc;
-		this.raf = win.requestAnimationFrame.bind(win);
+		this.win = win;
 		this._mdl = this.requireUncached("modules.js");
-		this._graph = this.requireUncached("graphic.js");
+		//this._graph = this.requireUncached("graphic.js");
 
 		this._mdl.init(this);
-		this._graph.init(this);
+		//this._graph.init(this);
 
 		this._em.emit("after_init");
 	}
@@ -45,14 +45,14 @@ class OGEngine {
 	frameUpdate() {
 		this._em.emit("before_update");
 		this._em.emit("update");
-		this.frameDraw();
+
+
 		this._em.emit("after_update");
 		this.realFPS = Math.round(1000/(Date.now()-this.frameStart))+1;
-		window.deltaTime = (Date.now()-this.frameStart)/1000;
+		global.deltaTime = (Date.now()-this.frameStart)/1000;
 		this.frameStart = Date.now();
-		
-		//RAF PART
 	}
+
 	frameDraw() {
 		this._em.emit("before_draw");
 		this._em.emit("draw");
@@ -92,7 +92,7 @@ class EventEmitter {
     }
   }
   emit(event, ...args) {
-  	global.console.log(event);
+  	//global.console.log(event);
     if (typeof this.events[event] === 'object') {
       this.events[event].forEach(listener => listener.apply(this._bind, args));
     }

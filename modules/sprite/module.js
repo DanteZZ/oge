@@ -45,7 +45,7 @@ class Sprite {
 	} 
 
 	base64_encode(path) {
-	    var image = _fs.readFileSync(path, 'base64');
+	    var image = this._oge._fs.readFileSync(path, 'base64');
 	    return "data:image/png;base64,"+image;
 	}
 }
@@ -172,7 +172,6 @@ module.exports = {
 				info.canvas = info.layer;
 
 				delete info.layer;
-
 				return this._oge._graph.drawImage(info);
 			}
 		})

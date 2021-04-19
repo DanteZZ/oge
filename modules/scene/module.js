@@ -140,7 +140,10 @@ module.exports = {
 		});
 
 		this.oge._em.on("before_draw",function(){
-			if (this.buffer.scene._draw) {this.buffer.scene._draw();};
+
+			if (this.buffer.scene._draw) {
+				this.buffer.scene._draw();
+			};
 		});
 
 		this.oge._em.on("update",function(){

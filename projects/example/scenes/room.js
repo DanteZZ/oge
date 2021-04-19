@@ -74,8 +74,6 @@
 			};
 		}
 		ctx.stroke();
-
-		
 	},
 
 	_update:function() {

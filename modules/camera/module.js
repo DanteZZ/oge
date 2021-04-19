@@ -24,8 +24,8 @@ let fns = {
 		let cam = this.buffer.camera;
 		let w = 0;
 		let h = 0;
-		if (cam.width) {w = cam.width} else {w = window.innerWidth;};
-		if (cam.height) {h = cam.height} else {h = window.innerHeight;};
+		if (cam.width) {w = cam.width} else {w = this.win.innerWidth;};
+		if (cam.height) {h = cam.height} else {h = this.win.innerHeight;};
 		this._graph.setSize(this.buffer.defaultLayer,w,h);
 
 		if (cam.point) {
